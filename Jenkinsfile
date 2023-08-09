@@ -13,7 +13,6 @@ pipeline{
         stage('UNIT testing'){
             steps{
                 script{
-                    // sh 'mvn -version'
                     sh 'mvn test'
                 }
             }
@@ -35,7 +34,7 @@ pipeline{
         stage('SonarQube analysis'){
             steps{
                 script{
-                    withSonarQubeEnv(credentialsId: 'sonar-api') {
+                    withSonarQubeEnv(credentialsId: 'sonarserver', installationName: 'sonarserver2'){
                         sh 'mvn clean package sonar:sonar'
                     }
                 }
@@ -44,7 +43,7 @@ pipeline{
         stage('Quality Gate Status'){
             steps{
                 script{
-                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar-api'
+                    waitForQualityGate abortPipeline: false, credentialsId: 'sonarserver'
                 }
             }
         }
