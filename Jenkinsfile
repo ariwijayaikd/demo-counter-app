@@ -53,7 +53,7 @@ pipeline{
                 script{
                     def pom = readMavenPom file: 'pom.xml'
 
-                    def nexusrepo = readMavenPom.version.endsWith("SNAPSHOT") ? "counterapp-dev" ; "counterapp"
+                    def nexusrepo = pom.version.endsWith("SNAPSHOT") ? "counterapp-dev" ; "counterapp"
 
                     nexusArtifactUploader artifacts: 
                     [
