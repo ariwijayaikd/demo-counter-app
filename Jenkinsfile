@@ -53,6 +53,8 @@ pipeline{
                 script{
                     def pom = readMavenPom file: 'pom.xml'
 
+                    def nexusrepo = readMavenPom.version.endsWith("SNAPSHOT") ? "counterapp-dev" ; "counterapp"
+
                     nexusArtifactUploader artifacts: 
                     [
                         [
@@ -67,7 +69,7 @@ pipeline{
                     nexusUrl: '10.2.155.210:8081', 
                     nexusVersion: 'nexus3', 
                     protocol: 'http', 
-                    repository: 'counterapp', 
+                    repository: "${nexusrepo}", 
                     version: "${pom.version}"
                 }
             }
