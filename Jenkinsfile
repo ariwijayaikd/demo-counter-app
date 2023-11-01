@@ -77,20 +77,23 @@ pipeline{
 
         stage('Build Docker Image'){
             steps{
-                git 'https:/github.com/ariwijayaikd/demo-counter-app.git'
-                sh 'docker build -t $JOB_NAME:v1.$BUILD.ID .'
-                sh 'docker image tag $JOB_NAME:v1.$BUILD.ID ariwijayaikd/$JOB_NAME:v1.$BUILD.ID'
-                sh 'docker image tag $JOB_NAME:v1.$BUILD.ID ariwijayaikd/$JOB_NAME:latest'
+                script{
+                    sh 'docker build -t $JOB_NAME:v1.$BUILD.ID .'
+                    sh 'docker image tag $JOB_NAME:v1.$BUILD.ID ariwijayaikd/$JOB_NAME:v1.$BUILD.ID'
+                    sh 'docker image tag $JOB_NAME:v1.$BUILD.ID ariwijayaikd/$JOB_NAME:latest'
+                }
             }
         }
 
         stage('Push Docker Image to Docker Hub'){
             steps{
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-auth', usernameVariable: 'UNAME', passwordVariable: 'PASS')]) {
-                sh 'docker login -u $UNAME -p $PASS'
-                sh 'docker push ariwijayaikd/$JOB_NAME:v1.$BUILD.ID'
-                sh 'docker push ariwijayaikd/$JOB_NAME:latest'
-            }
+                script{
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-auth', usernameVariable: 'UNAME', passwordVariable: 'PASS')]) {
+                    sh 'docker login -u $UNAME -p $PASS'
+                    sh 'docker push ariwijayaikd/$JOB_NAME:v1.$BUILD.ID'
+                    sh 'docker push ariwijayaikd/$JOB_NAME:latest'
+                    }
+                }
             }
         }
     }  
