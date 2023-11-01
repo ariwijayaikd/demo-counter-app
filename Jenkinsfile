@@ -84,11 +84,12 @@ pipeline{
             }
         }
 
-        stage('Push'){
+        stage('Push Docker Image to Docker Hub'){
             steps{
-            withCredentials([usernamePassword(credentialsId: ‘docker-hub’, usernameVariable: ‘DOCKER_USERNAME’, passwordVariable: ‘DOCKER_PASSWORD’)]) {
-            sh ‘docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD’
-            sh ‘docker push my-image:${BUILD_NUMBER}’
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-auth', usernameVariable: 'UNAME', passwordVariable: 'PASS')]) {
+                sh 'docker login -u $UNAME -p $PASS'
+                sh 'docker push ariwijayaikd/$JOB_NAME:v1.$BUILD.ID'
+                sh 'docker push ariwijayaikd/$JOB_NAME:latest'
             }
             }
         }
