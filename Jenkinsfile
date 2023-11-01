@@ -60,7 +60,7 @@ pipeline{
                             type: 'jar'
                         ]
                     ], 
-                    credentialsId: 'nexus-auth',
+                    credentialsId: 'nexus-auth-bener',
                     groupId: 'com.example', 
                     nexusUrl: '10.2.155.210:8081', 
                     nexusVersion: 'nexus3', 
