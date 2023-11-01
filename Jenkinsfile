@@ -74,5 +74,15 @@ pipeline{
                 }
             }
         }
+
+        stage('Build Docker Image'){
+            steps{
+                script{
+                    sh 'docker image build -t $JOB_NAME:v1.$BUILD.ID'
+                    sh 'docker image tag $JOB_NAME:v1.$BUILD.ID ariwijayaikd/$JOB_NAME:v1.$BUILD.ID'
+                    sh 'docker image tag $JOB_NAME:v1.$BUILD.ID ariwijayaikd/$JOB_NAME:latest'
+                }
+            }
+        }
     }  
 }
