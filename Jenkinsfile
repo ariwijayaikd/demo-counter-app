@@ -6,7 +6,7 @@ pipeline{
         stage('Git Checkout'){
             steps{
                 script{
-                    git branch: 'main', url: 'https://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@github.com/ariwijayaikd/demo-counter-app.git'
+                    git branch: 'main', url: 'https://github.com/ariwijayaikd/demo-counter-app.git'
                 }
             }
         }
@@ -77,11 +77,19 @@ pipeline{
 
         stage('Build Docker Image'){
             steps{
-                script{
-                    sh 'docker build -t $JOB_NAME:v1.$BUILD.ID'
-                    sh 'docker image tag $JOB_NAME:v1.$BUILD.ID ariwijayaikd/$JOB_NAME:v1.$BUILD.ID'
-                    sh 'docker image tag $JOB_NAME:v1.$BUILD.ID ariwijayaikd/$JOB_NAME:latest'
-                }
+                git 'https:/github.com/ariwijayaikd/demo-counter-app.git'
+                sh 'docker build -t $JOB_NAME:v1.$BUILD.ID .'
+                sh 'docker image tag $JOB_NAME:v1.$BUILD.ID ariwijayaikd/$JOB_NAME:v1.$BUILD.ID'
+                sh 'docker image tag $JOB_NAME:v1.$BUILD.ID ariwijayaikd/$JOB_NAME:latest'
+            }
+        }
+
+        stage('Push'){
+            steps{
+            withCredentials([usernamePassword(credentialsId: ‘docker-hub’, usernameVariable: ‘DOCKER_USERNAME’, passwordVariable: ‘DOCKER_PASSWORD’)]) {
+            sh ‘docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD’
+            sh ‘docker push my-image:${BUILD_NUMBER}’
+            }
             }
         }
     }  
